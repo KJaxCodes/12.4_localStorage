@@ -6,12 +6,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 1	// TODO: Load the note color from the local storage.
     let noteColor = localStorage.getItem("noteColor") || null; // Stores the selected note color from the form.
+    console.log(noteColor);
 
 
     // 2	// TODO: Load the note ID counter from the local storage.
     let noteIdCounter = Number(localStorage.getItem("noteIdCounter")) || 0;  // Counter for assigning unique IDs to new notes.
 
     // 3	// TODO: Load the notes from the local storage.
+
+    function loadNotes() {
+        let notes = JSON.parse(localStorage.getItem("notes")) || {};
+    }
+
+    loadNotes();
 
     function addNewNote() {
         const id = noteIdCounter;
@@ -23,6 +30,11 @@ document.addEventListener("DOMContentLoaded", function () {
         note.className = "note"; // Sets a CSS class.
         note.style.backgroundColor = noteColor; // Sets the note's background color using the last selected note color.
         noteContainer.appendChild(note); // Appends it to the note container element as its child.
+
+        let notes = JSON.parse(localStorage.getItem("notes")) || {}; //create the notes object and check to see if any notes are already in the object
+        notes[id] = content; //adds new note to notes object
+        localStorage.setItem("notes", JSON.stringify(notes));  //saves updated object with new note to localStorage
+
 
         noteIdCounter++; // Increments the counter since the ID is used for this note.
 
@@ -53,6 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("dblclick", function (event) {
         if (event.target.classList.contains("note")) {
             event.target.remove(); // Removes the clicked note.
+
+            localStorage.removeItem("note");
 
             // 6			// TODO: Delete the note from the saved notes in the local storage. 
         }
