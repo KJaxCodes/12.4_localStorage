@@ -14,8 +14,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 3	// TODO: Load the notes from the local storage.
 
+    function readNotes() {
+        let notes = localStorage.getItem("notes")
+
+        if (!notes) {
+            notes = {};
+        }
+        else {
+            notes = JSON.parse(localStorage.getItem("notes"));
+        }
+        return notes;
+    }
+
+
     function loadNotes() {
         let notes = JSON.parse(localStorage.getItem("notes")) || {};
+
+        for (const note of notes) {
+
+            const note = document.createElement("textarea");
+            note.setAttribute("data-note-id", id.toString()); // Stores the note ID to its data attribute.
+            note.value = content; // Sets the note ID as value.
+            note.className = "note"; // Sets a CSS class.
+            note.style.backgroundColor = noteColor; // Sets the note's background color using the last selected note color.
+            noteContainer.appendChild(note); // Appends it to the note container element as its child.
+        }
     }
 
     loadNotes();
@@ -30,6 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
         note.className = "note"; // Sets a CSS class.
         note.style.backgroundColor = noteColor; // Sets the note's background color using the last selected note color.
         noteContainer.appendChild(note); // Appends it to the note container element as its child.
+
+        console.log(note);
 
         let notes = JSON.parse(localStorage.getItem("notes")) || {}; //create the notes object and check to see if any notes are already in the object
         notes[id] = content; //adds new note to notes object
@@ -56,6 +81,8 @@ document.addEventListener("DOMContentLoaded", function () {
         noteColor = newColor; // Updates the stored note color with the new selection.
 
         // 5		// TODO: Update the note color in the local storage.
+
+        localStorage.setItem("noteColor", noteColor);
     });
 
     newNoteButton.addEventListener("click", function () {
