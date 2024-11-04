@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 1	// TODO: Load the note color from the local storage.
     let noteColor = localStorage.getItem("noteColor") || null; // Stores the selected note color from the form.
-    console.log(noteColor);
+    //console.log(noteColor);
 
 
     // 2	// TODO: Load the note ID counter from the local storage.
@@ -26,16 +26,48 @@ document.addEventListener("DOMContentLoaded", function () {
         return notes;
     }
 
+    // function saveText(text) {
+    //     console.log("Should Save")
+    //     console.log(text)
+    // }
+    let timeoutId = null;
+
+    function getText(e) {
+        clearTimeout(timeoutId);
+        let text = e.target.value;
+        timeoutId = setTimeout(() => {
+            console.log("Should Save")
+            console.log(text)
+            // first get the current data in local storage //
+            // convert it to the object //
+            // get the key from data id //
+            // update the object //
+            // save back to local storage //
+
+            const data = localStorage.getItem("notes");
+
+            if (data) {
+                const dataObj = JSON.parse(data);
+                const id = e.target.dataset.noteId;
+                dataObj[id] = e.target.value;
+
+                localStorage.setItem("notes", JSON.stringify(dataObj));
+            }
+            //
+        }, 3000);
+    }
+
 
     function loadNotes() {
-        let notes = JSON.parse(localStorage.getItem("notes")) || {};
-
-        for (const note of notes) {
+        let notesObject = JSON.parse(localStorage.getItem("notes")) || {};
+        for (const key in notesObject) {
 
             const note = document.createElement("textarea");
-            note.setAttribute("data-note-id", id.toString()); // Stores the note ID to its data attribute.
-            note.value = content; // Sets the note ID as value.
+            note.addEventListener("input", getText);
+            note.setAttribute("data-note-id", key); // Stores the note ID to its data attribute.
+            note.value = notesObject[key]; // Sets the note ID as value.
             note.className = "note"; // Sets a CSS class.
+            //note.value = "This really needs to be set dynamically"
             note.style.backgroundColor = noteColor; // Sets the note's background color using the last selected note color.
             noteContainer.appendChild(note); // Appends it to the note container element as its child.
         }
@@ -50,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const note = document.createElement("textarea");
         note.setAttribute("data-note-id", id.toString()); // Stores the note ID to its data attribute.
         note.value = content; // Sets the note ID as value.
+        note.addEventListener("input", getText);
         note.className = "note"; // Sets a CSS class.
         note.style.backgroundColor = noteColor; // Sets the note's background color using the last selected note color.
         noteContainer.appendChild(note); // Appends it to the note container element as its child.
@@ -91,9 +124,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.addEventListener("dblclick", function (event) {
         if (event.target.classList.contains("note")) {
+            const noteId = event.target.getAttribute("data-note-id");
+            console.log("Note ID:", noteId);
+
             event.target.remove(); // Removes the clicked note.
 
-            localStorage.removeItem("note");
+            if (noteId) {
+                localStorage.removeItem(noteId);
+            }
+
+            // let note = document.querySelectorAll("note");
+            // note = localStorage.removeItem(note);     
+
+            // localStorage.removeItem("note");
+            // first grab the notes //
+            // convert to an object //
+
+            // see if a note with that key exists 
+            // for example key = 1
+            // if exists then delete it from that object //
+            // then set the updated / (in this case minus one key/value pair) object back  in local storage
 
             // 6			// TODO: Delete the note from the saved notes in the local storage. 
         }
