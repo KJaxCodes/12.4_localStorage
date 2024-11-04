@@ -95,6 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         noteIdCounter++; // Increments the counter since the ID is used for this note.
+        localStorage.setItem("noteIdCounter", noteIdCounter);
 
         // 4 		// TODO: Add new note to the saved notes in the local storage.
     }
@@ -124,13 +125,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.addEventListener("dblclick", function (event) {
         if (event.target.classList.contains("note")) {
+
+
             const noteId = event.target.getAttribute("data-note-id");
             console.log("Note ID:", noteId);
 
             event.target.remove(); // Removes the clicked note.
 
             if (noteId) {
-                localStorage.removeItem(noteId);
+                const notes = localStorage.getItem("notes");
+                const notesObj = JSON.parse(notes);
+                delete notesObj[noteId];
+                const updatedNotesObj = JSON.stringify(notesObj);
+                localStorage.setItem("notes", updatedNotesObj)
+                console.log(notesObj);
             }
 
             // let note = document.querySelectorAll("note");
